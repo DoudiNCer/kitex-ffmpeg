@@ -27,3 +27,40 @@ func (s *KitexFfmpegImpl) DropWorkspace(ctx context.Context, req *kitex_ffmpeg.D
 	}
 	return
 }
+
+// UploadFiles implements the KitexFfmpegImpl interface.
+func (s *KitexFfmpegImpl) UploadFiles(ctx context.Context, req *kitex_ffmpeg.UploadFilesRequest) (resp *kitex_ffmpeg.UploadFilesResponse, err error) {
+	workPath, err := util.CheckWorkEnvExist(req.Token)
+	if err != nil {
+		return nil, err
+	}
+	fileIDs := resp.GetFiles()
+	for _, file := range req.Files {
+		fileID, err := util.WriteFile(workPath, file)
+		if err != nil {
+			return nil, err
+		}
+		var rf kitex_ffmpeg.RemoteFile
+		rf.FileID = fileID
+		rf.FileName = file.FileName
+		fileIDs = append(fileIDs, &rf)
+	}
+	return
+}
+
+// DownloadFiles implements the KitexFfmpegImpl interface.
+func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.DownloadFilesRequest) (resp *kitex_ffmpeg.DownloadFilesResponse, err error) {
+	workPath, err := util.CheckWorkEnvExist(req.Token)
+	if err != nil {
+		return nil, err
+	}
+	files := resp.GetFiles()
+	for _, fileID := range req.FileIDs {
+		file, err := util.ReadFile(workPath, fileID)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, file)
+	}
+	return
+}

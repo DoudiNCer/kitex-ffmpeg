@@ -21,6 +21,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"InitWorkspace": kitex.NewMethodInfo(initWorkspaceHandler, newKitexFfmpegInitWorkspaceArgs, newKitexFfmpegInitWorkspaceResult, false),
 		"DropWorkspace": kitex.NewMethodInfo(dropWorkspaceHandler, newKitexFfmpegDropWorkspaceArgs, newKitexFfmpegDropWorkspaceResult, false),
+		"UploadFiles":   kitex.NewMethodInfo(uploadFilesHandler, newKitexFfmpegUploadFilesArgs, newKitexFfmpegUploadFilesResult, false),
+		"DownloadFiles": kitex.NewMethodInfo(downloadFilesHandler, newKitexFfmpegDownloadFilesArgs, newKitexFfmpegDownloadFilesResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "kitex_ffmpeg",
@@ -72,6 +74,42 @@ func newKitexFfmpegDropWorkspaceResult() interface{} {
 	return kitex_ffmpeg.NewKitexFfmpegDropWorkspaceResult()
 }
 
+func uploadFilesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*kitex_ffmpeg.KitexFfmpegUploadFilesArgs)
+	realResult := result.(*kitex_ffmpeg.KitexFfmpegUploadFilesResult)
+	success, err := handler.(kitex_ffmpeg.KitexFfmpeg).UploadFiles(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newKitexFfmpegUploadFilesArgs() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegUploadFilesArgs()
+}
+
+func newKitexFfmpegUploadFilesResult() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegUploadFilesResult()
+}
+
+func downloadFilesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*kitex_ffmpeg.KitexFfmpegDownloadFilesArgs)
+	realResult := result.(*kitex_ffmpeg.KitexFfmpegDownloadFilesResult)
+	success, err := handler.(kitex_ffmpeg.KitexFfmpeg).DownloadFiles(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newKitexFfmpegDownloadFilesArgs() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegDownloadFilesArgs()
+}
+
+func newKitexFfmpegDownloadFilesResult() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegDownloadFilesResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -97,6 +135,26 @@ func (p *kClient) DropWorkspace(ctx context.Context, req *kitex_ffmpeg.DropWorks
 	_args.Req = req
 	var _result kitex_ffmpeg.KitexFfmpegDropWorkspaceResult
 	if err = p.c.Call(ctx, "DropWorkspace", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UploadFiles(ctx context.Context, req *kitex_ffmpeg.UploadFilesRequest) (r *kitex_ffmpeg.UploadFilesResponse, err error) {
+	var _args kitex_ffmpeg.KitexFfmpegUploadFilesArgs
+	_args.Req = req
+	var _result kitex_ffmpeg.KitexFfmpegUploadFilesResult
+	if err = p.c.Call(ctx, "UploadFiles", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.DownloadFilesRequest) (r *kitex_ffmpeg.DownloadFilesResponse, err error) {
+	var _args kitex_ffmpeg.KitexFfmpegDownloadFilesArgs
+	_args.Req = req
+	var _result kitex_ffmpeg.KitexFfmpegDownloadFilesResult
+	if err = p.c.Call(ctx, "DownloadFiles", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
