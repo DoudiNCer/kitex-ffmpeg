@@ -43,9 +43,20 @@ struct DownloadFilesResponse{
     1: list<File> files
 }
 
+struct ExecRequest{
+    1: string token
+    2: list<string> args
+}
+
+struct ExecResponse{
+    1: string sout
+    2: string serr
+}
+
 service KitexFfmpeg{
     InitWorkspaceResponse InitWorkspace(1:InitWorkspaceRequest req)
     DropWorkspaceResponse DropWorkspace(1:DropWorkspaceRequest req)
     UploadFilesResponse UploadFiles(1:UploadFilesRequest req)
     DownloadFilesResponse DownloadFiles(1:DownloadFilesRequest req)
+    ExecResponse ExecFfmpeg(1:ExecRequest req)
 }

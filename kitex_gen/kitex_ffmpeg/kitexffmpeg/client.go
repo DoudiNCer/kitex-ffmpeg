@@ -15,6 +15,7 @@ type Client interface {
 	DropWorkspace(ctx context.Context, req *kitex_ffmpeg.DropWorkspaceRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.DropWorkspaceResponse, err error)
 	UploadFiles(ctx context.Context, req *kitex_ffmpeg.UploadFilesRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.UploadFilesResponse, err error)
 	DownloadFiles(ctx context.Context, req *kitex_ffmpeg.DownloadFilesRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.DownloadFilesResponse, err error)
+	ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.ExecRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.ExecResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +65,9 @@ func (p *kKitexFfmpegClient) UploadFiles(ctx context.Context, req *kitex_ffmpeg.
 func (p *kKitexFfmpegClient) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.DownloadFilesRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.DownloadFilesResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DownloadFiles(ctx, req)
+}
+
+func (p *kKitexFfmpegClient) ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.ExecRequest, callOptions ...callopt.Option) (r *kitex_ffmpeg.ExecResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ExecFfmpeg(ctx, req)
 }

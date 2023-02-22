@@ -64,3 +64,15 @@ func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.D
 	}
 	return
 }
+
+// ExecFfmpeg implements the KitexFfmpegImpl interface.
+func (s *KitexFfmpegImpl) ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.ExecRequest) (resp *kitex_ffmpeg.ExecResponse, err error) {
+	workPath, err := util.CheckWorkEnvExist(req.Token)
+	if err != nil {
+		return nil, err
+	}
+	sout, serr, err := util.ExecFfmpeg(workPath, req.Args_)
+	resp.Sout = sout
+	resp.Serr = serr
+	return
+}

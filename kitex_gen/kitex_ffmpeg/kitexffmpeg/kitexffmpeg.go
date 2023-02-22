@@ -23,6 +23,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"DropWorkspace": kitex.NewMethodInfo(dropWorkspaceHandler, newKitexFfmpegDropWorkspaceArgs, newKitexFfmpegDropWorkspaceResult, false),
 		"UploadFiles":   kitex.NewMethodInfo(uploadFilesHandler, newKitexFfmpegUploadFilesArgs, newKitexFfmpegUploadFilesResult, false),
 		"DownloadFiles": kitex.NewMethodInfo(downloadFilesHandler, newKitexFfmpegDownloadFilesArgs, newKitexFfmpegDownloadFilesResult, false),
+		"ExecFfmpeg":    kitex.NewMethodInfo(execFfmpegHandler, newKitexFfmpegExecFfmpegArgs, newKitexFfmpegExecFfmpegResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "kitex_ffmpeg",
@@ -110,6 +111,24 @@ func newKitexFfmpegDownloadFilesResult() interface{} {
 	return kitex_ffmpeg.NewKitexFfmpegDownloadFilesResult()
 }
 
+func execFfmpegHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*kitex_ffmpeg.KitexFfmpegExecFfmpegArgs)
+	realResult := result.(*kitex_ffmpeg.KitexFfmpegExecFfmpegResult)
+	success, err := handler.(kitex_ffmpeg.KitexFfmpeg).ExecFfmpeg(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newKitexFfmpegExecFfmpegArgs() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegExecFfmpegArgs()
+}
+
+func newKitexFfmpegExecFfmpegResult() interface{} {
+	return kitex_ffmpeg.NewKitexFfmpegExecFfmpegResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -155,6 +174,16 @@ func (p *kClient) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.DownloadF
 	_args.Req = req
 	var _result kitex_ffmpeg.KitexFfmpegDownloadFilesResult
 	if err = p.c.Call(ctx, "DownloadFiles", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.ExecRequest) (r *kitex_ffmpeg.ExecResponse, err error) {
+	var _args kitex_ffmpeg.KitexFfmpegExecFfmpegArgs
+	_args.Req = req
+	var _result kitex_ffmpeg.KitexFfmpegExecFfmpegResult
+	if err = p.c.Call(ctx, "ExecFfmpeg", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
