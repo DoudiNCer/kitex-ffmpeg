@@ -15,7 +15,7 @@ func InitWorkEnv(whoami string) (token string, err error) {
 	stoken := s256.Sum(nil)
 	token = hex.EncodeToString(stoken)
 	workPath := env.WorkPara + "/" + token
-	err = os.Mkdir(workPath, 0600)
+	err = os.MkdirAll(workPath, 0600)
 	if err != nil {
 		return "", err
 	}

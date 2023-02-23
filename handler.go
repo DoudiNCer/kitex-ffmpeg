@@ -15,7 +15,9 @@ func (s *KitexFfmpegImpl) InitWorkspace(ctx context.Context, req *kitex_ffmpeg.I
 	if err != nil {
 		return nil, err
 	}
-	resp.Token = token
+	var rep kitex_ffmpeg.InitWorkspaceResponse
+	rep.Token = token
+	resp = &rep
 	return
 }
 
@@ -71,8 +73,10 @@ func (s *KitexFfmpegImpl) ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.Exec
 	if err != nil {
 		return nil, err
 	}
+	var rep kitex_ffmpeg.ExecResponse
 	sout, serr, err := util.ExecFfmpeg(workPath, req.Args_)
-	resp.Sout = sout
-	resp.Serr = serr
+	rep.Sout = sout
+	rep.Serr = serr
+	resp = &rep
 	return
 }
