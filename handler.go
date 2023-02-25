@@ -33,10 +33,11 @@ func (s *KitexFfmpegImpl) DropWorkspace(ctx context.Context, req *kitex_ffmpeg.D
 // UploadFiles implements the KitexFfmpegImpl interface.
 func (s *KitexFfmpegImpl) UploadFiles(ctx context.Context, req *kitex_ffmpeg.UploadFilesRequest) (resp *kitex_ffmpeg.UploadFilesResponse, err error) {
 	workPath, err := util.CheckWorkEnvExist(req.Token)
+	var resps kitex_ffmpeg.UploadFilesResponse
 	if err != nil {
 		return nil, err
 	}
-	fileIDs := resp.GetFiles()
+	fileIDs := resps.GetFiles()
 	for _, file := range req.Files {
 		fileID, err := util.WriteFile(workPath, file)
 		if err != nil {
@@ -47,7 +48,7 @@ func (s *KitexFfmpegImpl) UploadFiles(ctx context.Context, req *kitex_ffmpeg.Upl
 		rf.FileName = file.FileName
 		fileIDs = append(fileIDs, &rf)
 	}
-	return
+	return &resps, nil
 }
 
 // DownloadFiles implements the KitexFfmpegImpl interface.
@@ -56,6 +57,7 @@ func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.D
 	if err != nil {
 		return nil, err
 	}
+	var resps kitex_ffmpeg.DownloadFilesResponse
 	files := resp.GetFiles()
 	for _, fileID := range req.FileIDs {
 		file, err := util.ReadFile(workPath, fileID)
@@ -64,7 +66,7 @@ func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.D
 		}
 		files = append(files, file)
 	}
-	return
+	return &resps, nil
 }
 
 // ExecFfmpeg implements the KitexFfmpegImpl interface.
