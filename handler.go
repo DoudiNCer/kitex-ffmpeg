@@ -37,7 +37,8 @@ func (s *KitexFfmpegImpl) UploadFiles(ctx context.Context, req *kitex_ffmpeg.Upl
 	if err != nil {
 		return nil, err
 	}
-	fileIDs := resps.GetFiles()
+	//fileIDs := resps.GetFiles()
+	var fileIDs []*kitex_ffmpeg.RemoteFile
 	for _, file := range req.Files {
 		fileID, err := util.WriteFile(workPath, file)
 		if err != nil {
@@ -48,6 +49,7 @@ func (s *KitexFfmpegImpl) UploadFiles(ctx context.Context, req *kitex_ffmpeg.Upl
 		rf.FileName = file.FileName
 		fileIDs = append(fileIDs, &rf)
 	}
+	resps.Files = fileIDs
 	return &resps, nil
 }
 
@@ -58,7 +60,8 @@ func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.D
 		return nil, err
 	}
 	var resps kitex_ffmpeg.DownloadFilesResponse
-	files := resp.GetFiles()
+	//files := resp.GetFiles()
+	var files []*kitex_ffmpeg.File
 	for _, fileID := range req.FileIDs {
 		file, err := util.ReadFile(workPath, fileID)
 		if err != nil {
@@ -66,6 +69,7 @@ func (s *KitexFfmpegImpl) DownloadFiles(ctx context.Context, req *kitex_ffmpeg.D
 		}
 		files = append(files, file)
 	}
+	resps.Files = files
 	return &resps, nil
 }
 
@@ -77,8 +81,9 @@ func (s *KitexFfmpegImpl) ExecFfmpeg(ctx context.Context, req *kitex_ffmpeg.Exec
 	}
 	var rep kitex_ffmpeg.ExecResponse
 	sout, serr, err := util.ExecFfmpeg(workPath, req.Args_)
+
 	rep.Sout = sout
 	rep.Serr = serr
 	resp = &rep
-	return
+	return resp, err
 }

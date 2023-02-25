@@ -41,7 +41,7 @@ func WriteFile(workPath string, file *kitex_ffmpeg.File) (fileID string, err err
 	if err != nil {
 		return "", err
 	}
-	nFile, err := os.OpenFile(id, os.O_EXCL|os.O_CREATE|os.O_WRONLY, 0700)
+	nFile, err := os.OpenFile(id, os.O_EXCL|os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
 		return "", err
@@ -50,7 +50,7 @@ func WriteFile(workPath string, file *kitex_ffmpeg.File) (fileID string, err err
 	if err != nil {
 		return "", err
 	}
-	return fileID, nil
+	return id, nil
 }
 
 // 从工作区读取文件
@@ -67,7 +67,8 @@ func ReadFile(workPath, fileID string) (file *kitex_ffmpeg.File, err error) {
 	if err != nil {
 		return nil, err
 	}
-	file.FileName = fileID
-	file.Content = data
-	return file, nil
+	var files kitex_ffmpeg.File
+	files.FileName = fileID
+	files.Content = data
+	return &files, nil
 }
