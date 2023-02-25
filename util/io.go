@@ -41,7 +41,7 @@ func WriteFile(workPath string, file *kitex_ffmpeg.File) (fileID string, err err
 	if err != nil {
 		return "", err
 	}
-	nFile, err := os.OpenFile(id, os.O_EXCL|os.O_CREATE|os.O_WRONLY, 0600)
+	nFile, err := os.OpenFile(id, os.O_EXCL|os.O_CREATE|os.O_WRONLY, 0700)
 
 	if err != nil {
 		return "", err
