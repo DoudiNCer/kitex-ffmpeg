@@ -15,11 +15,11 @@ func InitWorkEnv(whoami string) (token string, err error) {
 	stoken := s256.Sum(nil)
 	token = hex.EncodeToString(stoken)
 	workPath := env.WorkPara + "/" + token
-	err = os.MkdirAll(workPath, 0600)
+	err = os.MkdirAll(workPath, 0700)
 	if err != nil {
 		return "", err
 	}
-	return token, err
+	return token, nil
 }
 
 // 检查用户的工作区与身份
